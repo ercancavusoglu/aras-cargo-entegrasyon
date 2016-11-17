@@ -39,6 +39,22 @@ Entegrasyon veya destek için issue açabilir, `ercancavusoglu@yandex.com.tr` ad
 			$aras->setReceiverAddress("ADRES");
 			$aras->setReceiverCityName("İL");
 			$aras->setIsWorldWide("0"); //Yurtiçi için 0 Yurtdışı için 1
+			
+			$aras->setPayorTypeCode("2");
+			$aras->setCodAmount("127.20");
+
+			$items=array();
+			$item_1=[
+				"BarcodeNumber"=>"test barkod"
+			];
+			$item_2=[
+				"BarcodeNumber"=>"test barkod"
+			];
+			$items[]=$item_1;
+			$items[]=$item_2;
+
+			$aras->setPieceDetail($items);
+
 
 			$result=$aras->check();
 		}

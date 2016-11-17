@@ -45,6 +45,103 @@ class Arax
     //Tanım
     protected $Description;
 
+    //Çoklu Kargo Detayları
+    protected $PieceDetail;
+
+    //Gönderinin ödemesini kimin yapacağını belirler. (1=Gönderici Öder, 2=Alıcı Öder)
+    protected $PayorTypeCode;
+
+    //Tahsilatlı Teslimat ürünü tutar bilgisi
+    protected $CodAmount;
+
+    //Kapıda Ödeme için 1
+    protected $IsCod;
+
+    protected $CodCollectionType;
+
+    protected $CodBillingType;
+
+    /**
+     * @return mixed
+     */
+    public function getCodBillingType()
+    {
+        return $this->CodBillingType;
+    }
+
+    /**
+     * @param mixed $CodBillingType
+     */
+    public function setCodBillingType($CodBillingType)
+    {
+        $this->CodBillingType = $CodBillingType;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCodCollectionType()
+    {
+        return $this->CodCollectionType;
+    }
+
+    /**
+     * @param mixed $CodCollectionType
+     */
+    public function setCodCollectionType($CodCollectionType)
+    {
+        $this->CodCollectionType = $CodCollectionType;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getIsCod()
+    {
+        return $this->IsCod;
+    }
+
+    /**
+     * @param mixed $IsCod
+     */
+    public function setIsCod($IsCod)
+    {
+        $this->IsCod = $IsCod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCodAmount()
+    {
+        return $this->CodAmount;
+    }
+
+    /**
+     * @param mixed $CodAmount
+     */
+    public function setCodAmount($CodAmount)
+    {
+        $this->CodAmount = $CodAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayorTypeCode()
+    {
+        return $this->PayorTypeCode;
+    }
+
+    /**
+     * @param mixed $PayorTypeCode
+     */
+    public function setPayorTypeCode($PayorTypeCode)
+    {
+        $this->PayorTypeCode = $PayorTypeCode;
+    }
+
     /**
      * @return string
      */
@@ -269,6 +366,22 @@ class Arax
         $this->Description = $Description;
     }
 
+    /**
+     * @return array
+     */
+    public function getPieceDetail()
+    {
+        return $this->PieceDetail;
+    }
+
+    /**
+     * @param array $PieceDetail
+     */
+    public function setPieceDetail($value)
+    {
+        $this->PieceDetail = $value;
+    }
+
     public function check()
     {
         $output = $this->xmlGonder($this->xmlDetails(), $this->URL);
@@ -280,6 +393,8 @@ class Arax
         $parser = simplexml_load_string($response2);
 
         $ResultCode = (string)$parser->SetOrderResponse->SetOrderResult->OrderResultInfo->ResultCode;
+        $ResultMessage = (string)$parser->SetOrderResponse->SetOrderResult->OrderResultInfo->ResultMessage;
+
         $ResultMessage = (string)$parser->SetOrderResponse->SetOrderResult->OrderResultInfo->ResultMessage;
         //$InvoiceKey=(string) $this->result->SetOrderResponse->SetOrderResult->OrderResultInfo->InvoiceKey;
         //$OrgReceiverCustId=(string) $this->result->SetOrderResponse->SetOrderResult->OrderResultInfo->OrgReceiverCustId;
@@ -309,6 +424,10 @@ class Arax
         return $cevap;
     }
 
+    public function xmlDetails2()
+    {
+        return $this->xmlDetails();
+    }
 
     protected function xmlDetails()
     {
@@ -325,22 +444,39 @@ class Arax
           <InvoiceNumber>' . $this->getInvoiceNumber() . '</InvoiceNumber>
           <ReceiverName>' . $this->getReceiverName() . '</ReceiverName>
           <ReceiverAddress>' . $this->getReceiverAddress() . '</ReceiverAddress>
-          <ReceiverPhone1>' . $this->getReceiverPhone1() . '</ReceiverPhone1>          
+          <ReceiverPhone1>' . $this->getReceiverPhone1() . '</ReceiverPhone1>    
           <ReceiverCityName>' . $this->getReceiverCityName() . '</ReceiverCityName>
           <ReceiverTownName>' . $this->getReceiverTownName() . '</ReceiverTownName>
-          <VolumetricWeight>1</VolumetricWeight>
-          <Weight>1</Weight>
           <PieceCount>' . $this->getPieceCount() . '</PieceCount>
+          <CodAmount>'.$this->getCodAmount().'</CodAmount>
           <IntegrationCode>' . $this->getIntegrationCode() . '</IntegrationCode>
-          <Description>' . $this->getDescription() . '</Description>                   
-          <IsWorldWide>0</IsWorldWide>
-          <PieceDetails>
-            <PieceDetail>
-                <BarcodeNumber>' . $this->getInvoiceNumber() . '</BarcodeNumber>
-            </PieceDetail>            
-          </PieceDetails>
-          <SenderAccountAddressId />
-        </Order>        
+          <CodCollectionType>'.$this->getCodCollectionType().'</CodCollectionType>
+          <Description>' . $this->getDescription() . '</Description>
+          <PayorTypeCode>'.$this->getPayorTypeCode().'</PayorTypeCode>
+          <IsWorldWide>'.$this->getIsWorldWide().'</IsWorldWide>
+          <CodBillingType>'.$this->getCodBillingType().'</CodBillingType>
+          <IsCod>'.$this->getIsCod().'</IsCod>
+          ';
+
+        if (count($this->getPieceDetail()) > 0) {
+            $xml_data .= '<PieceDetails>';
+        }
+        foreach ($this->getPieceDetail() as $value) {
+            if (!empty($value)) {
+                $xml_data .= '
+                <PieceDetail>
+                    <BarcodeNumber>' . $value["BarcodeNumber"] . '</BarcodeNumber>
+                </PieceDetail>
+                ';
+            }
+        }
+
+        if (count($this->getPieceDetail()) > 0) {
+            $xml_data .= '</PieceDetails>';
+        }
+
+        $xml_data .= '<SenderAccountAddressId />';
+        $xml_data .= '</Order>        
       </orderInfo>
       <userName>' . $this->getUsername() . '</userName>
       <password>' . $this->getPassword() . '</password>
