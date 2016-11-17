@@ -40,8 +40,11 @@ Entegrasyon veya destek için issue açabilir, `ercancavusoglu@yandex.com.tr` ad
 			$aras->setReceiverCityName("İL");
 			$aras->setIsWorldWide("0"); //Yurtiçi için 0 Yurtdışı için 1
 			
-			$aras->setPayorTypeCode("2");
-			$aras->setCodAmount("127.20");
+			$aras->setCodCollectionType(0);//Tahsilatlı teslimat ürünü ödeme tipi (0=Nakit,1=Kredi Kartı)
+            $aras->setPayorTypeCode(1);//Gönderinin ödemesini kimin yapacağını belirler. (1=Gönderici Öder, 2=Alıcı Öder)
+            $aras->setCodAmount("127.20");
+            $aras->setIsCod(1);//IsCod	String(1)	'Tahsilatlı Kargo' gönderisi (0=Hayır, 1=Evet)	Hayır
+            $aras->setPieceCount(1);//PieceCount	Integer(2)	Sevkedilen Kargo Sayısı
 
 			$items=array();
 			$item_1=[
