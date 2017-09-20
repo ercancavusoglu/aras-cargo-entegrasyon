@@ -2,7 +2,7 @@
 
 Laravel tabanlı yazdığım aras kargo entegrasyon kütüphanesi. Tek parça ürün gönderimi için hazırlanmıştır. Birden fazla ürün gönderimi için xml kısmının güncellenmesi gerekiyor. 
 
-Entegrasyon veya destek için issue açabilir, `ercancavusoglu@yandex.com.tr` adresinden veya [@devredisibirak](http://twitter.com/devredisibirak) twitter hesabımdan bana ulaşabilirsiniz.
+Entegrasyon veya destek için issue açabilir, [@devredisibirak](http://twitter.com/devredisibirak) twitter hesabımdan bana ulaşabilirsiniz.
 
 ## Kurulum
 
